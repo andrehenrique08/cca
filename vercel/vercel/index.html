@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA Academy | Subnetting</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0b1120;
+    color: #e5e7eb;
+    min-height: 100vh;
+}
+
+header {
+    background: #111c31;
+    padding: 22px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #26344d;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+    color: #38bdf8;
+}
+
+.logo span {
+    color: white;
+}
+
+header small {
+    color: #94a3b8;
+}
+
+.container {
+    max-width: 900px;
+    margin: 45px auto;
+    padding: 20px;
+}
+
+.hero {
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.stat {
+    background: #162238;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #26344d;
+}
+
+.stat small {
+    color: #94a3b8;
+}
+
+.stat h2 {
+    color: #38bdf8;
+    margin-top: 8px;
+}
+
+.quiz {
+    background: #162238;
+    border: 1px solid #26344d;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+.progress {
+    height: 7px;
+    background: #334155;
+    border-radius: 10px;
+    margin: 15px 0 25px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #38bdf8;
+    width: 0%;
+    transition: .3s;
+}
+
+.question-number {
+    color: #38bdf8;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.question {
+    font-size: 21px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 12px;
+}
+
+.option {
+    background: #202f48;
+    padding: 17px;
+    border: 1px solid #34445e;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: .2s;
+    color: white;
+    text-align: left;
+    font-size: 15px;
+}
+
+.option:hover {
+    border-color: #38bdf8;
+    background: #263d5c;
+}
+
+.option.selected {
+    border: 2px solid #38bdf8;
+    background: #123a55;
+}
+
+.option.correct {
+    border: 2px solid #22c55e;
+    background: #123c30;
+}
+
+.option.wrong {
+    border: 2px solid #ef4444;
+    background: #451e2a;
+}
+
+.explanation {
+    display: none;
+    background: #102f3e;
+    border-left: 4px solid #38bdf8;
+    padding: 17px;
+    border-radius: 7px;
+    margin-top: 20px;
+    line-height: 1.6;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    gap: 10px;
+}
+
+button.primary {
+    background: #0284c7;
+    border: none;
+    color: white;
+    padding: 13px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button.primary:hover {
+    background: #0369a1;
+}
+
+button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.result {
+    display: none;
+    text-align: center;
+    padding: 35px;
+}
+
+.result h1 {
+    font-size: 35px;
+    color: #38bdf8;
+    margin-bottom: 20px;
+}
+
+.result p {
+    color: #cbd5e1;
+    margin: 12px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+}
+
+@media(max-width:600px) {
+    header { padding: 20px; }
+    .container { margin: 20px auto; }
+    .stats { grid-template-columns: 1fr; }
+    .quiz { padding: 20px; }
+    .question { font-size: 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">CCNA <span>ACADEMY</span></div>
+    <small>IPv4 Subnetting Training</small>
+</header>
+
+<div class="container">
+
+    <section class="hero">
+        <h1>Desafio de Sub-redes IPv4</h1>
+        <p>
+            Teste seus conhecimentos em redes de computadores.
+            Resolva questões de subnetting e acompanhe seu desempenho.
+        </p>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            <small>Questões</small>
+            <h2 id="total">15</h2>
+        </div>
+        <div class="stat">
+            <small>Respondidas</small>
+            <h2 id="answered">0</h2>
+        </div>
+        <div class="stat">
+            <small>Tempo</small>
+            <h2 id="timer">00:00</h2>
+        </div>
+    </section>
+
+    <section class="quiz" id="quiz">
+        <div class="question-number" id="number"></div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+
+        <h2 class="question" id="question"></h2>
+
+        <div class="options" id="options"></div>
+
+        <div class="explanation" id="explanation"></div>
+
+        <div class="actions">
+            <button class="primary" id="previous" onclick="previousQuestion()">
+                Voltar
+            </button>
+
+            <button class="primary" id="next" onclick="nextQuestion()" disabled>
+                Confirmar
+            </button>
+        </div>
+    </section>
+
+    <section class="quiz result" id="result">
+        <h1>Simulado finalizado!</h1>
+        <h2 id="score"></h2>
+        <p id="percentage"></p>
+        <p id="message"></p>
+        <button class="primary" onclick="restart()">Refazer simulado</button>
+    </section>
+
+</div>
+
+<footer>
+    CCNA Academy • Treinamento de Redes IPv4
+</footer>
+
+<script>
+
+const questions = [
+
+{
+q: "Um computador possui o endereço 192.168.10.75/26. Qual é o endereço de rede?",
+a: ["192.168.10.0","192.168.10.64","192.168.10.75","192.168.10.128"],
+c: 1,
+e: "A máscara /26 possui blocos de 64 endereços. O IP 75 pertence ao intervalo 64–127. Portanto, a rede é 192.168.10.64."
+},
+
+{
+q: "Qual é o broadcast da rede 172.20.5.0/24?",
+a: ["172.20.5.1","172.20.5.254","172.20.5.255","172.20.5.0"],
+c: 2,
+e: "Uma rede /24 possui 256 endereços. O último endereço, .255, é o broadcast."
+},
+
+{
+q: "Um servidor utiliza 10.0.0.130/25. Qual é o endereço de rede?",
+a: ["10.0.0.0","10.0.0.128","10.0.0.130","10.0.0.255"],
+c: 1,
+e: "A máscara /25 divide a rede em blocos de 128. O endereço 130 pertence ao bloco iniciado em 128."
+},
+
+{
+q: "Qual é o último host utilizável da rede 192.168.1.0/27?",
+a: ["192.168.1.30","192.168.1.31","192.168.1.32","192.168.1.29"],
+c: 0,
+e: "O bloco /27 possui 32 endereços. A rede começa em .0, o broadcast é .31 e o último host é .30."
+},
+
+{
+q: "Um roteador possui o IP 172.16.8.45/28. Qual é o broadcast?",
+a: ["172.16.8.32","172.16.8.47","172.16.8.48","172.16.8.46"],
+c: 1,
+e: "O bloco /28 possui 16 endereços. A rede começa em .32 e termina em .47."
+},
+
+{
+q: "Quantos endereços IP totais existem em uma subnet /29?",
+a: ["4","8","16","32"],
+c: 1,
+e: "Uma máscara /29 deixa 3 bits para hosts. 2³ = 8 endereços totais, sendo normalmente 6 utilizáveis."
+},
+
+{
+q: "Qual máscara decimal corresponde ao prefixo /26?",
+a: ["255.255.255.0","255.255.255.128","255.255.255.192","255.255.255.224"],
+c: 2,
+e: "O prefixo /26 corresponde a 255.255.255.192."
+},
+
+{
+q: "Qual é o primeiro host utilizável da rede 192.168.20.128/26?",
+a: ["192.168.20.128","192.168.20.129","192.168.20.190","192.168.20.191"],
+c: 1,
+e: "O primeiro host é sempre um endereço após o endereço de rede. Portanto, .129."
+},
+
+{
+q: "Uma rede utiliza o prefixo /30. Quantos hosts podem ser utilizados?",
+a: ["2","4","6","8"],
+c: 0,
+e: "O /30 possui 4 endereços totais. Descontando rede e broadcast, restam 2 hosts utilizáveis."
+},
+
+{
+q: "Qual é a rede do IP 10.10.10.90/25?",
+a: ["10.10.10.0","10.10.10.64","10.10.10.128","10.10.10.90"],
+c: 0,
+e: "O /25 cria blocos de 128. O IP 90 pertence ao intervalo 0–127."
+},
+
+{
+q: "Qual é o broadcast de 192.168.5.160/27?",
+a: ["192.168.5.175","192.168.5.191","192.168.5.192","192.168.5.190"],
+c: 1,
+e: "O bloco de 32 iniciado em .160 termina em .191, que é o broadcast."
+},
+
+{
+q: "Quantos hosts utilizáveis existem em uma rede /28?",
+a: ["14","16","30","62"],
+c: 0,
+e: "Restam 4 bits para hosts. 2⁴ = 16 endereços totais. Subtraindo rede e broadcast, temos 14."
+},
+
+{
+q: "Qual é a máscara decimal do prefixo /27?",
+a: ["255.255.255.0","255.255.255.128","255.255.255.224","255.255.255.192"],
+c: 2,
+e: "O prefixo /27 corresponde à máscara 255.255.255.224."
+},
+
+{
+q: "Um dispositivo possui o IP 192.168.100.201/29. Qual é a rede?",
+a: ["192.168.100.192","192.168.100.200","192.168.100.208","192.168.100.201"],
+c: 1,
+e: "O /29 trabalha com blocos de 8. O endereço 201 está no bloco iniciado em 200."
+},
+
+{
+q: "Uma rede /24 foi dividida em sub-redes /26. Quantas sub-redes foram criadas?",
+a: ["2","4","8","16"],
+c: 1,
+e: "Foram emprestados 2 bits do campo de host. 2² = 4 sub-redes."
+}
+
+];
+
+let current = 0;
+let answers = {};
+let seconds = 0;
+let timerInterval;
+
+function startTimer() {
+    clearInterval(timerInterval);
+    seconds = 0;
+    timerInterval = setInterval(() => {
+        seconds++;
+        let min = String(Math.floor(seconds / 60)).padStart(2,"0");
+        let sec = String(seconds % 60).padStart(2,"0");
+        document.getElementById("timer").innerText = min + ":" + sec;
+    },1000);
+}
+
+function render() {
+
+    const q = questions[current];
+
+    document.getElementById("number").innerText =
+        `QUESTÃO ${current+1} DE ${questions.length}`;
+
+    document.getElementById("question").innerText = q.q;
+
+    document.getElementById("progress").style.width =
+        ((current+1)/questions.length*100) + "%";
+
+    document.getElementById("answered").innerText =
+        Object.keys(answers).length;
+
+    const options = document.getElementById("options");
+    options.innerHTML = "";
+
+    q.a.forEach((option,index) => {
+
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.innerText = String.fromCharCode(65+index) + ") " + option;
+
+        if(answers[current] === index) {
+            btn.classList.add("selected");
+        }
+
+        if(answers[current] !== undefined) {
+            btn.disabled = true;
+
+            if(index === q.c) btn.classList.add("correct");
+            if(index === answers[current] && index !== q.c)
+                btn.classList.add("wrong");
+        }
+
+        btn.onclick = () => {
+            answers[current] = index;
+            render();
+        };
+
+        options.appendChild(btn);
+    });
+
+    const explanation = document.getElementById("explanation");
+
+    if(answers[current] !== undefined) {
+        explanation.style.display = "block";
+        explanation.innerHTML = "<strong>Resolução:</strong><br>" + q.e;
+    } else {
+        explanation.style.display = "none";
+    }
+
+    document.getElementById("previous").disabled = current === 0;
+
+    const next = document.getElementById("next");
+
+    next.disabled = answers[current] === undefined;
+
+    next.innerText = current === questions.length-1
+        ? "Finalizar simulado"
+        : "Próxima questão";
+}
+
+function nextQuestion() {
+    if(answers[current] === undefined) return;
+
+    if(current < questions.length-1) {
+        current++;
+        render();
+    } else {
+        finish();
+    }
+}
+
+function previousQuestion() {
+    if(current > 0) {
+        current--;
+        render();
+    }
+}
+
+function finish() {
+
+    clearInterval(timerInterval);
+
+    let correct = 0;
+
+    questions.forEach((q,index) => {
+        if(answers[index] === q.c) correct++;
+    });
+
+    const percent = Math.round(correct/questions.length*100);
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("score").innerText =
+        correct + " / " + questions.length + " acertos";
+
+    document.getElementById("percentage").innerText =
+        "Aproveitamento: " + percent + "%";
+
+    document.getElementById("message").innerText =
+        percent >= 80
+        ? "Excelente! Você está dominando subnetting."
+        : percent >= 60
+        ? "Bom trabalho! Continue praticando."
+        : "Continue estudando. A prática leva à evolução.";
+}
+
+function restart() {
+    current = 0;
+    answers = {};
+    document.getElementById("quiz").style.display = "block";
+    document.getElementById("result").style.display = "none";
+    startTimer();
+    render();
+}
+
+document.getElementById("total").innerText = questions.length;
+
+startTimer();
+render();
+
+</script>
+
+</body>
+</html>
